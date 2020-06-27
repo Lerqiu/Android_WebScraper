@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">WebScraper</string>
+    <string name="New_releases">New releases</string>
+    <string name="View_all">View all</string>
+    <string name="Settings">Settings</string>
+    <string name="nevigation_drawer_open">Open navigation draw</string>
+    <string name="nevigation_drawer_close">Close navigation draw</string>
+    <string name="hello_again">Hello again</string>
+    <string name="Unread">Unread</string>
+    <string name="Add_new">Add new</string>
+</resources>

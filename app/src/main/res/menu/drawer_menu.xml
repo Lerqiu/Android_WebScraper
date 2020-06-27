@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nev_new"
+            android:icon="@drawable/ic_new_releases"
+            android:title="@string/New_releases" />
+        <item
+            android:id="@+id/nev_add"
+            android:icon="@drawable/ic_add"
+            android:title="@string/Add_new" />
+        <item
+            android:id="@+id/nev_unread"
+            android:icon="@drawable/ic_not_readed"
+            android:title="@string/Unread" />
+        <item
+            android:id="@+id/nev_all"
+            android:icon="@drawable/ic_view_all"
+            android:title="@string/View_all" />
+        <item
+            android:id="@+id/nev_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/Settings" />
+    </group>
+</menu>
