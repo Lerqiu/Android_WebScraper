@@ -36,10 +36,4 @@ class Data :Serializable {
     var sendEmail = true
     var time:Int = 60*10
     var WebSites: MutableList<WebSiteData> = ArrayList()
-
-    fun addNovel(d:WebSiteData){
-        d.lastReadedChapter = d.chapters.last()
-        d.lastNewChapter = d.chapters[0]
-        WebSites.add(d)
-    }
 }

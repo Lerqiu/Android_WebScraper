@@ -41,6 +41,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             navigationView.setCheckedItem(R.id.nev_new)
             changeToolBarText(getString(R.string.New_releases))
         }
+
+        Thread(Runnable {
+            //DataManagement.loadDataFromDisk(this.applicationContext)
+            UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
+        }).start()
+    }
+
+    override fun onPause() {
+        Thread(Runnable {
+            DataManagement.saveDataToDisk(this.applicationContext)
+        }).start()
+        super.onPause()
     }
 
 
@@ -52,7 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun changeToolBarText(newTitle: String) {
-        supportActionBar?.title=newTitle
+        supportActionBar?.title = newTitle
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {

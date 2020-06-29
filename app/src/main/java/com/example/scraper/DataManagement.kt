@@ -3,17 +3,34 @@ import java.io.*
 import java.lang.Exception
 import java.util.concurrent.Semaphore
 
+interface DataWasUpdatedSignal {
+    fun signalRecived()
+}
 
 object DataManagement {
     val dataFileName = "data.bin"
     var data: Data = Data()
 
     private val sharedLock = Semaphore(1, true)
+    private var sendUpdateSignalTo: DataWasUpdatedSignal? = null
+
+    fun setUpdateSignalReciver(obj: DataWasUpdatedSignal) {
+        sendUpdateSignalTo = obj
+    }
+
+    private fun sendUpdateSignal() {
+        sendUpdateSignalTo?.signalRecived()
+    }
 
     fun saveDataToDisk(applicationContext: Context) {
         try {
             sharedLock.acquire()
-            ObjectOutputStream(File(applicationContext.filesDir,this.dataFileName).outputStream()).use { it -> it.writeObject(data) }
+            ObjectOutputStream(
+                File(
+                    applicationContext.filesDir,
+                    this.dataFileName
+                ).outputStream()
+            ).use { it -> it.writeObject(data) }
             //UpdateData.addToLog("Zapisano dane.")
         } finally {
             sharedLock.release()
@@ -25,12 +42,18 @@ object DataManagement {
         try {
             sharedLock.acquire()
             try {
-                ObjectInputStream(File(applicationContext.filesDir,this.dataFileName).inputStream()).use {
+                ObjectInputStream(
+                    File(
+                        applicationContext.filesDir,
+                        this.dataFileName
+                    ).inputStream()
+                ).use {
                     val d = it.readObject()
                     if (d is Data)
                         this.data = d
                 }
                 UpdateData.addToLog("Wczytano dane.")
+                sendUpdateSignal()
             } catch (e: Exception) {
                 UpdateData.addToLog("Próba wczytania danych nieudana. Brak pliku.")
             }
@@ -51,8 +74,10 @@ object DataManagement {
     fun setPeriodOfChecking(e: Int) {
         try {
             sharedLock.acquire()
-            if (e >= 0)
+            if (e >= 0) {
                 data.time = e
+                sendUpdateSignal()
+            }
         } finally {
             sharedLock.release()
         }
@@ -88,7 +113,11 @@ object DataManagement {
     fun setEmailAcceptedTo(e: Boolean) {
         try {
             sharedLock.acquire()
-            this.data.sendEmail = e
+            if (this.data.sendEmail != e) {
+                this.data.sendEmail = e
+                sendUpdateSignal()
+            }
+
         } finally {
             sharedLock.release()
         }
@@ -106,8 +135,13 @@ object DataManagement {
     fun addNewNovel(novel: WebSiteData) {
         try {
             sharedLock.acquire()
-            this.data.addNovel(novel)
+
+            novel.lastReadedChapter = novel.chapters.last()
+            novel.lastNewChapter = novel.chapters[0]
+            this.data.WebSites.add(novel)
+
             UpdateData.addToLog("Dodano novelkę.Link: " + novel.link + " Tytuł: " + novel.Title)
+            sendUpdateSignal()
         } finally {
             sharedLock.release()
         }
@@ -122,6 +156,7 @@ object DataManagement {
                     if (i.chapters.size > 0)
                         i.lastNewChapter = i.chapters[0]
                 }
+            sendUpdateSignal()
         } finally {
             sharedLock.release()
         }
@@ -131,8 +166,10 @@ object DataManagement {
         try {
             sharedLock.acquire()
             if (isNovelAdded(link)) {
-                this.data.WebSites = this.data.WebSites.filter { it -> it.link != link } as MutableList<WebSiteData>
+                this.data.WebSites =
+                    this.data.WebSites.filter { it -> it.link != link } as MutableList<WebSiteData>
                 UpdateData.addToLog("Usunięto: " + link)
+                sendUpdateSignal()
                 return true
             }
             return false
@@ -189,6 +226,7 @@ object DataManagement {
                 if (i.link == link) {
                     UpdateData.addToLog("Zaktualizowano postęp w czytaniu." + i.lastReadedChapter.link + " -> " + i.lastNewChapter.link)
                     i.lastReadedChapter = i.lastNewChapter
+                    sendUpdateSignal()
                     return true
                 }
             return false
@@ -209,6 +247,7 @@ object DataManagement {
                         i.lastNewChapter = i.chapters[0]
                     }
                 }
+            sendUpdateSignal()
         } finally {
             sharedLock.release()
         }
