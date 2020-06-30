@@ -26,4 +26,5 @@
     <string name="Number">Number</string>
     <string name="Published_by">Published by</string>
     <string name="Time_of_update">Time of update</string>
+    <string name="Last_readed">Last readed</string>
 </resources>
