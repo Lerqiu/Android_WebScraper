@@ -8,4 +8,15 @@
     <string name="hello_again">Hello again</string>
     <string name="Unread">Unread</string>
     <string name="Add_new">Add new</string>
+    <string name="Author">Author</string>
+    <string name="Latest_chapter">Latest chapter</string>
+    <string name="recheck">Time for recheck (in minutes).</string>
+    <string name="Do_check_automatically">Do check automatically</string>
+    <string name="Show_standard_notification">Show standard notification</string>
+    <string name="Send_notification_on_email">Send notification on email</string>
+    <string name="Your_email">Your email</string>
+    <string name="Error_wrong_email_format">Error: Wrong email format!!!</string>
+    <string name="New_email_set">New email set.</string>
+    <string name="New_value_set">New value set</string>
+    <string name="Error_incorrect_format">Error incorrect format</string>
 </resources>

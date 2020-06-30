@@ -34,6 +34,8 @@ class Data :Serializable {
 
     var email =""
     var sendEmail = true
+    var showNotification = true
+    var checkPeriodic = false
     var time:Int = 60*10
     var WebSites: MutableList<WebSiteData> = ArrayList()
 }

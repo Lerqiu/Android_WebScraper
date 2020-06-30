@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         Thread(Runnable {
-            //DataManagement.loadDataFromDisk(this.applicationContext)
-            UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
+            DataManagement.loadDataFromDisk(this.applicationContext)
+            //UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
         }).start()
     }
 

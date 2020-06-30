@@ -92,6 +92,39 @@ object DataManagement {
         }
     }
 
+    fun getNotificationStatus():Boolean {
+        try {
+            sharedLock.acquire()
+            return data.showNotification
+        } finally {
+            sharedLock.release()
+        }
+    }
+    fun setNotificationStatus(newSetting:Boolean){
+        try {
+            sharedLock.acquire()
+            data.showNotification = newSetting
+        } finally {
+            sharedLock.release()
+        }
+    }
+    fun getCheckPeriodic():Boolean {
+        try {
+            sharedLock.acquire()
+            return data.checkPeriodic
+        } finally {
+            sharedLock.release()
+        }
+    }
+
+    fun setCheckPeriodic(newSetting:Boolean){
+        try {
+            sharedLock.acquire()
+            data.checkPeriodic = newSetting
+        } finally {
+            sharedLock.release()
+        }
+    }
     fun setEmail(e: String) {
         try {
             sharedLock.acquire()
@@ -194,25 +227,22 @@ object DataManagement {
         return false
     }
 
-    fun listOfNovels(): List<String> {
+    fun listOfNovels(): List<WebSiteData> {
         try {
             sharedLock.acquire()
-            val li: MutableList<String> = ArrayList()
-            for (i in this.data.WebSites)
-                li.add(i.Title)
-            return li
+            return this.data.WebSites
         } finally {
             sharedLock.release()
         }
     }
 
-    fun listNotReadedNovel(): List<String> {
+    fun listNotReadedNovel(): List<WebSiteData> {
         try {
             sharedLock.acquire()
-            val li: MutableList<String> = ArrayList()
+            val li: MutableList<WebSiteData> = ArrayList()
             for (i in this.data.WebSites)
                 if (i.lastReadedChapter.link != i.lastNewChapter.link)
-                    li.add(i.Title)
+                    li.add(i)
             return li
         } finally {
             sharedLock.release()
