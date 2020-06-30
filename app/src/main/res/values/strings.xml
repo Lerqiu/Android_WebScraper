@@ -19,4 +19,11 @@
     <string name="New_email_set">New email set.</string>
     <string name="New_value_set">New value set</string>
     <string name="Error_incorrect_format">Error incorrect format</string>
+    <string name="Title">Title</string>
+    <string name="Tags">Tags</string>
+    <string name="Website">Website</string>
+    <string name="Copied">Copied</string>
+    <string name="Number">Number</string>
+    <string name="Published_by">Published by</string>
+    <string name="Time_of_update">Time of update</string>
 </resources>

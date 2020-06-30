@@ -12,7 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import java.lang.NumberFormatException
 
-class Settings_layout : Fragment() {
+class Settings_layout(mainActivity: MainActivity) : Fragment() {
+    private val mainActivity = mainActivity
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -1,5 +1,6 @@
 package com.example.webscraper
 
+import WebSiteData
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -33,18 +34,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.addDrawerListener(actionBarDT)
         actionBarDT.syncState()
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container,
-                NewNovels_layout()
-            ).commit()
-            navigationView.setCheckedItem(R.id.nev_new)
-            changeToolBarText(getString(R.string.New_releases))
-        }
+        if (savedInstanceState == null)
+            setMainLayout_new_relases()
 
         Thread(Runnable {
             DataManagement.loadDataFromDisk(this.applicationContext)
-            //UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
+            UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
         }).start()
     }
 
@@ -70,43 +65,63 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
 
         when (p0.itemId) {
-            R.id.nev_new -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    NewNovels_layout()
-                ).commit()
-                changeToolBarText(getString(R.string.New_releases))
-            }
-            R.id.nev_add -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    Add_new_layout()
-                ).commit()
-                changeToolBarText(getString(R.string.Add_new))
-            }
-            R.id.nev_unread -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    Unread_layout()
-                ).commit()
-                changeToolBarText(getString(R.string.Unread))
-            }
-            R.id.nev_all -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    AllNovels_layout()
-                ).commit()
-                changeToolBarText(getString(R.string.View_all))
-            }
-            R.id.nev_settings -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    Settings_layout()
-                ).commit()
-                changeToolBarText(getString(R.string.Settings))
-            }
+            R.id.nev_new -> setMainLayout_new_relases()
+            R.id.nev_add -> setMainLayout_add_new()
+            R.id.nev_unread -> setMainLayout_unread()
+            R.id.nev_all -> setMainLayout_view_all()
+            R.id.nev_settings -> setMainLayout_settings()
         }
         drawer?.closeDrawer(GravityCompat.START)
         return true
     }
+
+    //<====================================================>
+    fun setMainLayout_new_relases() {
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            NewNovels_layout(this)
+        ).commit()
+        changeToolBarText(getString(R.string.New_releases))
+    }
+
+    fun setMainLayout_add_new() {
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            Add_new_layout(this)
+        ).commit()
+        changeToolBarText(getString(R.string.Add_new))
+    }
+
+    fun setMainLayout_unread() {
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            Unread_layout(this)
+        ).commit()
+        changeToolBarText(getString(R.string.Unread))
+    }
+
+    fun setMainLayout_view_all() {
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            AllNovels_layout(this)
+        ).commit()
+        changeToolBarText(getString(R.string.View_all))
+    }
+
+    fun setMainLayout_settings() {
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            Settings_layout(this)
+        ).commit()
+        changeToolBarText(getString(R.string.Settings))
+    }
+
+    fun setMainLayout_info_about_novel(novel: WebSiteData) {
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            Info_of_novel(this,novel)
+        ).commit()
+        changeToolBarText(novel.Title)
+    }
+
 }

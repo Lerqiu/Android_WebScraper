@@ -11,20 +11,21 @@
         android:layout_marginHorizontal="8dp"
         android:orientation="horizontal"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:id="@+id/numberLL">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Author"
+            android:text="@string/Number"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
-            android:id="@+id/list_item_child_layout_text"
+            android:id="@+id/number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
-            android:text=".............................."
+            android:text="N/A"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
     </LinearLayout>
 
@@ -34,18 +35,67 @@
         android:layout_marginHorizontal="8dp"
         android:orientation="horizontal"
         android:paddingTop="10dp"
+        android:id="@+id/nameLL"
         android:paddingBottom="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Latest_chapter"
+            android:text="@string/Title"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
-            android:id="@+id/list_item_child_layout_chapter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/name"
+            android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
+            android:text="N/A"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:orientation="horizontal"
+        android:id="@+id/publishedLL"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Published_by"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/publishedLL"
+            android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
+            android:text="N/A"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:id="@+id/timeAddLL"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Time_of_update"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeAdd"
             android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
             android:text="N/A"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
@@ -58,13 +108,6 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp">
 
-        <ImageButton
-            android:id="@+id/ImageButton_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_email" />
-        <!-- android:tint="@color/colorPrimary"-->
 
         <ImageButton
             android:id="@+id/ImageButton_web"
@@ -79,12 +122,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_bookmark" />
-        <ImageButton
-            android:id="@+id/ImageButton_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_info"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import android.widget.ExpandableListAdapter
 import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
+import com.example.listAdapters.CustomExpandableListAdapter
 import java.lang.Exception
 
-class Unread_layout : Fragment(), DataWasUpdatedSignal {
+class Unread_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSignal {
+    private val mainActivity = mainActivity
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
 
@@ -21,17 +23,21 @@ class Unread_layout : Fragment(), DataWasUpdatedSignal {
     ): View? {
         DataManagement.setUpdateSignalReciver(this)
         val view = inflater.inflate(R.layout.unread_novels_layout, container, false)
-        expandableListView = view.findViewById(R.id.all_novels_layout_list_view)
+        expandableListView = view.findViewById(R.id.unread_novels_layout_list_view)
         try {
             if (expandableListView != null) {
                 adapter = CustomExpandableListAdapter(
                     requireContext(),
-                    DataManagement.listNotReadedNovel()
+                    DataManagement.listNotReadedNovel(),
+                    mainActivity
                 )
                 expandableListView!!.setAdapter(adapter)
             }
         } catch (e: Exception) {
             println(e)
+        }
+        for(i in DataManagement.listNotReadedNovel()){
+            println(i.Title)
         }
         return view
     }

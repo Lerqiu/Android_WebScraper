@@ -1,4 +1,4 @@
-package com.example.webscraper
+package com.example.listAdapters
 
 import WebSiteData
 import android.content.Context
@@ -7,18 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import android.widget.ImageButton
 import android.widget.TextView
-import java.util.HashMap
-
-
-import java.util.*
+import com.example.webscraper.List_item_child
+import com.example.webscraper.MainActivity
+import com.example.webscraper.R
 
 
 class CustomExpandableListAdapter internal constructor(
     private val context: Context,
-    private val websites : List<WebSiteData>
+    private val websites: List<WebSiteData>,
+    mainActivity: MainActivity
 ) : BaseExpandableListAdapter() {
+    private val mainActivity = mainActivity
+
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         //return this.dataList[this.titleList[listPosition]]!![expandedListPosition]
         return getGroup(listPosition)
@@ -40,7 +41,12 @@ class CustomExpandableListAdapter internal constructor(
             val layoutInflater =
                 this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = layoutInflater.inflate(R.layout.list_item_child, null)
-            val item = List_item_child(convertView,this.websites[listPosition],context)
+            val item = List_item_child(
+                convertView,
+                this.websites[listPosition],
+                context,
+                mainActivity
+            )
         }
 
         return convertView!!

@@ -92,7 +92,7 @@ object DataManagement {
         }
     }
 
-    fun getNotificationStatus():Boolean {
+    fun getNotificationStatus(): Boolean {
         try {
             sharedLock.acquire()
             return data.showNotification
@@ -100,7 +100,8 @@ object DataManagement {
             sharedLock.release()
         }
     }
-    fun setNotificationStatus(newSetting:Boolean){
+
+    fun setNotificationStatus(newSetting: Boolean) {
         try {
             sharedLock.acquire()
             data.showNotification = newSetting
@@ -108,7 +109,8 @@ object DataManagement {
             sharedLock.release()
         }
     }
-    fun getCheckPeriodic():Boolean {
+
+    fun getCheckPeriodic(): Boolean {
         try {
             sharedLock.acquire()
             return data.checkPeriodic
@@ -117,7 +119,7 @@ object DataManagement {
         }
     }
 
-    fun setCheckPeriodic(newSetting:Boolean){
+    fun setCheckPeriodic(newSetting: Boolean) {
         try {
             sharedLock.acquire()
             data.checkPeriodic = newSetting
@@ -125,6 +127,7 @@ object DataManagement {
             sharedLock.release()
         }
     }
+
     fun setEmail(e: String) {
         try {
             sharedLock.acquire()
@@ -249,14 +252,12 @@ object DataManagement {
         }
     }
 
-    fun markAsReadNovel(link: String): Boolean {
+    fun markAsReadNovel(webSiteData: WebSiteData, chapterLastReaded: Chapter): Boolean {
         try {
             sharedLock.acquire()
             for (i in this.data.WebSites)
-                if (i.link == link) {
-                    UpdateData.addToLog("Zaktualizowano postęp w czytaniu." + i.lastReadedChapter.link + " -> " + i.lastNewChapter.link)
-                    i.lastReadedChapter = i.lastNewChapter
-                    sendUpdateSignal()
+                if (i == webSiteData) {
+                    i.lastReadedChapter = chapterLastReaded
                     return true
                 }
             return false

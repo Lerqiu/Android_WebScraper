@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class Add_new_layout: Fragment() {
+class Add_new_layout(mainActivity: MainActivity): Fragment() {
+    private val mainActivity = mainActivity
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

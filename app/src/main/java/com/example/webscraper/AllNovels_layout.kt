@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.example.listAdapters.CustomExpandableListAdapter
 import java.lang.Exception
 
-class AllNovels_layout : Fragment(), DataWasUpdatedSignal {
-
+class AllNovels_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSignal {
+    private val mainActivity = mainActivity
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
 
@@ -31,7 +32,8 @@ class AllNovels_layout : Fragment(), DataWasUpdatedSignal {
             if (expandableListView != null) {
                 adapter = CustomExpandableListAdapter(
                     requireContext(),
-                    DataManagement.listOfNovels()
+                    DataManagement.listOfNovels(),
+                    mainActivity
                 )
                 expandableListView!!.setAdapter(adapter)
                 /*
