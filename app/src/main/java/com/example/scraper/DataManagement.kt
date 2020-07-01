@@ -186,8 +186,26 @@ object DataManagement {
     fun updateNovel(new: WebSiteData) {
         try {
             sharedLock.acquire()
+
             for (i in this.data.WebSites)
                 if (i.link == new.link) {
+
+                    if (new.chapters.size > 0)
+                        for (index in 0..(new.chapters.size - 1)) {
+                            if (new.chapters[index] == i.lastNewChapter) {
+                                for (updatedChapterIndex in (index - 1) downTo 0) {
+                                    this.data.newChaptersReleses.add(
+                                        0,
+                                        newRelase(
+                                            i,
+                                            new.chapters[updatedChapterIndex]
+                                        )
+                                    )
+                                }
+                                break
+                            }
+                        }
+
                     i.chapters = new.chapters
                     if (i.chapters.size > 0)
                         i.lastNewChapter = i.chapters[0]
@@ -266,19 +284,26 @@ object DataManagement {
         }
     }
 
-    fun removeLastChapter(link: String) {
+    fun removeLastChapter() {
         try {
             sharedLock.acquire()
             for (i in this.data.WebSites)
-                if (i.link == link) {
+                if (i.chapters.size > 0) {
+                    UpdateData.addToLog("Usuwanie ostatniego rozdziału:" + i.Title + " " + i.chapters[0].Number)
+                    i.chapters.removeAt(0)
+                    i.lastNewChapter = i.chapters[0]
 
-                    if (i.chapters.size > 0) {
-                        UpdateData.addToLog("Usuwanie ostatniego rozdziału:" + i.Title + " " + i.chapters[0].Number)
-                        i.chapters.removeAt(0)
-                        i.lastNewChapter = i.chapters[0]
-                    }
                 }
             sendUpdateSignal()
+        } finally {
+            sharedLock.release()
+        }
+    }
+
+    fun newRelases(): List<newRelase> {
+        try {
+            sharedLock.acquire()
+            return this.data.newChaptersReleses
         } finally {
             sharedLock.release()
         }

@@ -27,4 +27,9 @@
     <string name="Published_by">Published by</string>
     <string name="Time_of_update">Time of update</string>
     <string name="Last_readed">Last readed</string>
+    <string name="instruction_od_adding">To add new novels to database you must copy paste link from main website.</string>
+    <string name="Supported_websites">Supported websites</string>
+    <string name="Adding_new_novel_was_started">Adding new novel was started</string>
+    <string name="Invalid_link">Invalid link</string>
+    <string name="Chapter">Chapter</string>
 </resources>

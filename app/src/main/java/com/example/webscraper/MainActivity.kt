@@ -1,11 +1,17 @@
 package com.example.webscraper
 
 import WebSiteData
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
@@ -17,8 +23,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         toolBar = findViewById<Toolbar>(R.id.toolBar)
         setSupportActionBar(toolBar)
+        toolBar?.findViewById<ImageView>(R.id.toolbar_logo)?.setOnClickListener { v->
+            DataManagement.removeLastChapter()
+           // UpdateData.runOneTime()
+        }
+        toolBar?.findViewById<ImageButton>(R.id.toolbar_logo_dark)?.setOnClickListener { v->
+             UpdateData.runOneTime()
+        }
+
 
         drawer = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
@@ -39,7 +54,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Thread(Runnable {
             DataManagement.loadDataFromDisk(this.applicationContext)
-            UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
+            //UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
         }).start()
     }
 
@@ -79,7 +94,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun setMainLayout_new_relases() {
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            NewNovels_layout(this)
+            NewNovelsRelases_layout(this)
         ).commit()
         changeToolBarText(getString(R.string.New_releases))
     }
@@ -124,4 +139,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         changeToolBarText(novel.Title)
     }
 
+}
+
+fun AppCompatActivity.hideKeyboard() {
+    val view = this.currentFocus
+    if (view != null) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+    // else {
+    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+    // }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -80,28 +81,60 @@
                     android:id="@+id/tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
                     android:paddingTop="10dp"
-                    android:paddingBottom="10dp">
+                    android:paddingBottom="10dp"
+                    app:flexWrap="wrap">
 
                 </com.google.android.flexbox.FlexboxLayout>
             </LinearLayout>
 
 
-            <com.google.android.flexbox.FlexboxLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
+                android:orientation="vertical"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                app:alignContent="stretch"
-                app:alignItems="stretch"
-                app:flexWrap="wrap">
+                android:paddingBottom="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Website"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/Website"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+                    <TextView
+                        android:id="@+id/guideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7"
+                        android:orientation="horizontal" />
+
+                    <ImageButton
+                        android:id="@+id/copy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="10dp"
+                        android:src="@drawable/ic_copy" />
+
+                    <ImageButton
+                        android:id="@+id/open_browser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="10dp"
+                        android:src="@drawable/ic_open_in_browser" />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/link"
@@ -112,21 +145,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textIsSelectable="true" />
 
-                <ImageButton
-                    android:id="@+id/copy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:src="@drawable/ic_copy" />
-
-                <ImageButton
-                    android:id="@+id/open_browser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:src="@drawable/ic_open_in_browser" />
-
-            </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

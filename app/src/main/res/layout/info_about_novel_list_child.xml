@@ -71,7 +71,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/publishedLL"
+            android:id="@+id/published"
             android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
             android:text="N/A"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />

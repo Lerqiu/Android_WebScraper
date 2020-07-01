@@ -52,9 +52,9 @@ object UpdateData {
     }
 
     fun runOneTime() {
-        GlobalScope.launch {
+        Thread(Runnable {
             runOneTime_P()
-        }
+        }).start()
     }
 
     fun addToLog(s: String) {
@@ -63,12 +63,16 @@ object UpdateData {
     }
 
     fun addNewNovel(link: String) {
-       // GlobalScope.launch {
+        Thread(Runnable {
             if (!DataManagement.isNovelAdded(link)) {
                 val scraper = WebSiteScraperManagement.FindWebScraper(link)
-                val novel = scraper.getData()
-                DataManagement.addNewNovel(novel)
+                try {
+                    val novel = scraper.getData()
+                    DataManagement.addNewNovel(novel)
+                } catch (e: Exception) {
+                    println(e)
+                }
             }
-       // }
+        }).start()
     }
 }

@@ -10,15 +10,16 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import com.example.webscraper.List_item_child
 import com.example.webscraper.MainActivity
+import com.example.webscraper.OnBookMarkClick
 import com.example.webscraper.R
 
 
 class CustomExpandableListAdapter internal constructor(
     private val context: Context,
     private val websites: List<WebSiteData>,
-    mainActivity: MainActivity
+    private val mainActivity: MainActivity,
+    private val mainFragmentBookmark: OnBookMarkClick
 ) : BaseExpandableListAdapter() {
-    private val mainActivity = mainActivity
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         //return this.dataList[this.titleList[listPosition]]!![expandedListPosition]
@@ -45,7 +46,8 @@ class CustomExpandableListAdapter internal constructor(
                 convertView,
                 this.websites[listPosition],
                 context,
-                mainActivity
+                mainActivity,
+                mainFragmentBookmark
             )
         }
 

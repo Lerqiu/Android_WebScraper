@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.example.listAdapters.CustomExpandableListAdapter
 import com.example.listAdapters.InfoAboutNovelCustomAdapter
@@ -19,11 +20,11 @@ import kotlinx.android.synthetic.main.info_about_novels_layout.*
 import java.lang.Exception
 
 
-class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Fragment() {
-    private val mainActivity = mainActivity
-    private val webSiteData = webSiteData
+class Info_of_novel(private val mainActivity: MainActivity, private val webSiteData: WebSiteData) :
+    Fragment(), OnBookMarkClick {
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
+    private var thisView: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +32,7 @@ class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Frag
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.info_about_novels_layout, container, false)
+        this.thisView = view
 
         setShowHideArror(view)
         setTitle(view)
@@ -45,7 +47,7 @@ class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Frag
         return view
     }
 
-    fun setShowHideArror(view: View) {
+    private fun setShowHideArror(view: View) {
         val arrow = view.findViewById<ImageView>(R.id.showHide)
         val viewPanel = view.findViewById<ScrollView>(R.id.scrollView)
 
@@ -63,15 +65,15 @@ class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Frag
         }
     }
 
-    fun setTitle(view: View) {
+    private fun setTitle(view: View) {
         view.findViewById<TextView>(R.id.title).text = webSiteData.Title
     }
 
-    fun setAuthor(view: View) {
+    private fun setAuthor(view: View) {
         view.findViewById<TextView>(R.id.author).text = webSiteData.Author
     }
 
-    fun setTags(view: View) {
+    private fun setTags(view: View) {
         val tags = view.findViewById<FlexboxLayout>(R.id.tags)
 
         if (webSiteData.genres.size == 0) {
@@ -82,17 +84,18 @@ class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Frag
             for (i in webSiteData.genres) {
                 val textV = TextView(mainActivity)
                 textV.setText(i)
+                textV.setPadding(10, 5, 10, 5)
                 tags.addView(textV)
             }
         }
 
     }
 
-    fun setLinkText(view: View) {
+    private fun setLinkText(view: View) {
         view.findViewById<TextView>(R.id.link).text = webSiteData.link
     }
 
-    fun setCopyButton(view: View) {
+    private fun setCopyButton(view: View) {
         val clipboard = mainActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         view.findViewById<ImageButton>(R.id.copy)
             .setOnClickListener(View.OnClickListener { view ->
@@ -107,7 +110,7 @@ class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Frag
             })
     }
 
-    fun setBrowserButton(view: View) {
+    private fun setBrowserButton(view: View) {
         view.findViewById<ImageButton>(R.id.open_browser)
             .setOnClickListener(View.OnClickListener { view ->
                 val intent = Intent(Intent.ACTION_VIEW)
@@ -116,10 +119,10 @@ class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Frag
             })
     }
 
-    fun setLastReaded(view: View){
+    private fun setLastReaded(view: View) {
         var chapter_text = webSiteData.lastReadedChapter.Name
         if (chapter_text.length == 0)
-            chapter_text =  webSiteData.lastReadedChapter.Number
+            chapter_text = webSiteData.lastReadedChapter.Number
 
         view.findViewById<TextView>(R.id.lastReaded).text = chapter_text
 
@@ -131,19 +134,27 @@ class Info_of_novel(mainActivity: MainActivity, webSiteData: WebSiteData) : Frag
             })
     }
 
-    fun setExpedabeleList(view: View) {
+
+    private fun setExpedabeleList(view: View) {
         expandableListView = view.findViewById(R.id.list_view)
         try {
             if (expandableListView != null) {
                 adapter = InfoAboutNovelCustomAdapter(
                     requireContext(),
                     webSiteData,
-                    mainActivity
+                    mainActivity,
+                    this
                 )
                 expandableListView!!.setAdapter(adapter)
             }
         } catch (e: Exception) {
             println(e)
+        }
+    }
+
+    override fun handleOnBookMarkClick() {
+        if (thisView != null) {
+            setLastReaded(thisView!!)
         }
     }
 }

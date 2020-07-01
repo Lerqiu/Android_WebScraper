@@ -29,4 +29,8 @@ object WebSiteScraperManagement {
         //Kolejne klasy sprawdzamy podobnie
         throw NullPointerException()
     }
+
+    fun getSupportedWebsites():List<String>{
+        return arrayListOf("NovelUpdates","ReadLightNovel")
+    }
 }

@@ -10,8 +10,7 @@ import androidx.fragment.app.Fragment
 import com.example.listAdapters.CustomExpandableListAdapter
 import java.lang.Exception
 
-class AllNovels_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSignal {
-    private val mainActivity = mainActivity
+class AllNovels_layout(private val mainActivity: MainActivity) : Fragment(), DataWasUpdatedSignal,OnBookMarkClick {
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
 
@@ -33,7 +32,8 @@ class AllNovels_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedS
                 adapter = CustomExpandableListAdapter(
                     requireContext(),
                     DataManagement.listOfNovels(),
-                    mainActivity
+                    mainActivity,
+                    this
                 )
                 expandableListView!!.setAdapter(adapter)
                 /*
@@ -74,7 +74,15 @@ class AllNovels_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedS
         return view
     }
 
+    fun reloadLayout(){
+        mainActivity.setMainLayout_view_all()
+    }
+
     override fun signalRecived() {
         println("""<===========================================================>""")
+    }
+
+    override fun handleOnBookMarkClick() {
+
     }
 }

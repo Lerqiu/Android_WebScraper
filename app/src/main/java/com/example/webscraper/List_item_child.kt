@@ -14,7 +14,8 @@ class List_item_child(
     val convertView: View,
     val website: WebSiteData,
     val context: Context,
-    val mainActivity: MainActivity
+    val mainActivity: MainActivity,
+    val mainFragmentBookMarkClick: OnBookMarkClick
 ) {
 
     init {
@@ -86,6 +87,7 @@ class List_item_child(
                     convertView.findViewById<ImageButton>(R.id.ImageButton_bookMark).isClickable =
                         false
                 }
+                mainFragmentBookMarkClick.handleOnBookMarkClick()
             })
     }
 

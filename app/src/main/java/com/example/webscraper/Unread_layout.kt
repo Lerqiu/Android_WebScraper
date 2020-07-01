@@ -11,8 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.listAdapters.CustomExpandableListAdapter
 import java.lang.Exception
 
-class Unread_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSignal {
-    private val mainActivity = mainActivity
+class Unread_layout(private val mainActivity: MainActivity) : Fragment(), DataWasUpdatedSignal, OnBookMarkClick {
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
 
@@ -29,20 +28,26 @@ class Unread_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSign
                 adapter = CustomExpandableListAdapter(
                     requireContext(),
                     DataManagement.listNotReadedNovel(),
-                    mainActivity
+                    mainActivity,
+                    this
                 )
                 expandableListView!!.setAdapter(adapter)
             }
         } catch (e: Exception) {
             println(e)
         }
-        for(i in DataManagement.listNotReadedNovel()){
-            println(i.Title)
-        }
         return view
+    }
+
+    fun reloadLayout(){
+        mainActivity.setMainLayout_unread()
     }
 
     override fun signalRecived() {
         println("""<===========================================================>""")
+    }
+
+    override fun handleOnBookMarkClick() {
+        reloadLayout()
     }
 }
