@@ -1,8 +1,12 @@
 package com.example.webscraper
 
+import DataWasUpdatedSignal
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +16,11 @@ import androidx.fragment.app.Fragment
 import com.example.listAdapters.NewRelasesCustomAdapter
 import java.lang.Exception
 
-class NewNovelsRelases_layout(private val mainActivity: MainActivity) : Fragment() {
+class New_relases_layout(private val mainActivity: MainActivity) : Fragment(),DataWasUpdatedSignal {
     private var fragmentView: View? = null
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
+    private var updateUIHandler: Handler? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +29,7 @@ class NewNovelsRelases_layout(private val mainActivity: MainActivity) : Fragment
     ): View? {
 
         fragmentView = inflater.inflate(R.layout.new_novels_layout, container, false)
+
         expandableListView = fragmentView?.findViewById(R.id.list_view)
 
         if (fragmentView != null && expandableListView != null) {
@@ -41,7 +47,26 @@ class NewNovelsRelases_layout(private val mainActivity: MainActivity) : Fragment
                 println(e)
             }
         }
-
+        setUpdateUIHandlerListener()
         return fragmentView!!
+    }
+
+    private fun setUpdateUIHandlerListener() {
+        if (updateUIHandler != null) return
+
+        updateUIHandler = object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(inputMessage: Message) {
+                reloadLayout()
+            }
+        }
+    }
+
+    private fun reloadLayout(){
+        mainActivity.setMainLayout_new_relases()
+        println("Mastąpiła aktualizacja!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2222")
+    }
+
+    override fun signalRecived() {
+        updateUIHandler?.sendEmptyMessage(0)
     }
 }

@@ -1,22 +1,26 @@
 package com.share.email
 
+import android.util.Log
+import co.nedim.maildroidx.MaildroidX
+import co.nedim.maildroidx.MaildroidXType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+/*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
-
+*/
 
 object EmailNotification {
     private var host: String = "smtp.gmail.com"
-    private var port: Int = 587
-    private var username: String= "lerqiua@gmail.com"
-    private var password: String = "Altron403"
-    private var senderEmail: String= "lerqiua@gmail.com"
+    private var port: Int = 465
+    private var username: String = "lerqiua@gmail.com"
+    private var password: String = "Altron0070"
+    private var senderEmail: String = "WebScraper"
 
-    fun sendMail(to: String?, subject: String?, content: String?) {
-
+    fun sendMail(to: String, subject: String, content: String) {
+        /*
         val props = Properties()
         props["mail.smtp.auth"] = "true"
         props["mail.smtp.host"] = host
@@ -50,7 +54,20 @@ object EmailNotification {
             Transport.send(message)
         } catch (exc: MessagingException) {
             throw RuntimeException(exc)
-        }
+        }*/
+
+        MaildroidX.Builder()
+            .smtp(host)
+            .smtpAuthentication(true)
+            .smtpUsername(username)
+            .smtpPassword(password)
+            .port(port.toString())
+            .type(MaildroidXType.HTML)
+            .to(to)
+            .from(senderEmail)
+            .subject( subject)
+            .body(content)
+            .mail()
     }
 
     fun getReceiver(): String {
@@ -63,7 +80,7 @@ object EmailNotification {
 
 
     fun send(content: String, title: String = "Novel update") {
-        GlobalScope.launch {
+        Runnable{
             val reciver = getReceiver()
             if (getReciverSeting() && reciver.length > 0) {
                 try {
@@ -72,6 +89,6 @@ object EmailNotification {
                     UpdateData.addToLog("Problem z wysłaniem wiadomości \n" + e)
                 }
             }
-        }
+        }.run()
     }
 }

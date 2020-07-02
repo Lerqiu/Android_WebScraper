@@ -1,5 +1,6 @@
 package com.example.webscraper
 
+import DataWasUpdatedSignal
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +12,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import java.lang.Exception
 
-class Add_new_layout(private val mainActivity: MainActivity) : Fragment() {
+class Add_new_layout(private val mainActivity: MainActivity) : Fragment(),DataWasUpdatedSignal {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +43,7 @@ class Add_new_layout(private val mainActivity: MainActivity) : Fragment() {
                     ).show()
                 }
                 mainActivity.hideKeyboard()
+                view.findViewById<EditText>(R.id.link).setText("")
                 Toast.makeText(
                     requireContext(),
                     mainActivity.getString(R.string.Adding_new_novel_was_started),
@@ -65,5 +67,9 @@ class Add_new_layout(private val mainActivity: MainActivity) : Fragment() {
             android.R.layout.simple_list_item_1, WebSiteScraperManagement.getSupportedWebsites()
         )
         mListView.adapter = arrayAdapter
+    }
+
+    override fun signalRecived() {
+
     }
 }

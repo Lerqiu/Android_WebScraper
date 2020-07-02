@@ -1,27 +1,27 @@
 package com.example.webscraper
 
+import Chapter
+import DataWasUpdatedSignal
 import WebSiteData
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
-import com.example.listAdapters.CustomExpandableListAdapter
+import com.example.helpers.OftenUsedMethods
+import com.example.helpers.OnBookMarkClick
 import com.example.listAdapters.InfoAboutNovelCustomAdapter
 import com.google.android.flexbox.FlexboxLayout
-import kotlinx.android.synthetic.main.info_about_novels_layout.*
 import java.lang.Exception
 
 
 class Info_of_novel(private val mainActivity: MainActivity, private val webSiteData: WebSiteData) :
-    Fragment(), OnBookMarkClick {
+    Fragment(), OnBookMarkClick, DataWasUpdatedSignal {
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
     private var thisView: View? = null
@@ -37,11 +37,13 @@ class Info_of_novel(private val mainActivity: MainActivity, private val webSiteD
         setShowHideArror(view)
         setTitle(view)
         setAuthor(view)
+        setNotificationButton(view)
+        setDeleteWebsite(view)
         setTags(view)
         setLinkText(view)
         setCopyButton(view)
         setBrowserButton(view)
-        setLastReaded(view)
+        setLastReaded(view, webSiteData.lastReadedChapter)
         setExpedabeleList(view)
 
         return view
@@ -71,6 +73,31 @@ class Info_of_novel(private val mainActivity: MainActivity, private val webSiteD
 
     private fun setAuthor(view: View) {
         view.findViewById<TextView>(R.id.author).text = webSiteData.Author
+    }
+
+    fun setNotificationButton(convertView: View) {
+        val website=webSiteData
+        val button = convertView.findViewById<ImageButton>(R.id.notifications)
+        if (DataManagement.getWebsiteNotifications(website) == false)
+            button.setColorFilter(Color.LTGRAY)
+
+        button.setOnClickListener(View.OnClickListener { view ->
+            if (DataManagement.getWebsiteNotifications(website)) {
+                button.setColorFilter(Color.LTGRAY)
+                DataManagement.setWebsiteNotifications(website, false)
+            } else {
+                button.setColorFilter(convertView.findViewById<ImageButton>(R.id.delete).colorFilter)
+                DataManagement.setWebsiteNotifications(website, true)
+            }
+        })
+    }
+
+    private fun setDeleteWebsite(view: View) {
+        view.findViewById<ImageButton>(R.id.delete)
+            .setOnClickListener(View.OnClickListener { it ->
+                DataManagement.removeNovel(webSiteData.link)
+                mainActivity.setMainLayout_new_relases()
+            })
     }
 
     private fun setTags(view: View) {
@@ -113,24 +140,17 @@ class Info_of_novel(private val mainActivity: MainActivity, private val webSiteD
     private fun setBrowserButton(view: View) {
         view.findViewById<ImageButton>(R.id.open_browser)
             .setOnClickListener(View.OnClickListener { view ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(webSiteData.link)
-                mainActivity.startActivity(intent)
+                OftenUsedMethods.openWebsite(mainActivity,webSiteData.link)
             })
     }
 
-    private fun setLastReaded(view: View) {
-        var chapter_text = webSiteData.lastReadedChapter.Name
-        if (chapter_text.length == 0)
-            chapter_text = webSiteData.lastReadedChapter.Number
+    private fun setLastReaded(view: View, chapter: Chapter) {
 
-        view.findViewById<TextView>(R.id.lastReaded).text = chapter_text
+        view.findViewById<TextView>(R.id.lastReaded).text = OftenUsedMethods.getChapterDescription(chapter)
 
         view.findViewById<ImageButton>(R.id.lastReaded_browserButton)
             .setOnClickListener(View.OnClickListener { view ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(webSiteData.lastReadedChapter.link)
-                mainActivity.startActivity(intent)
+                OftenUsedMethods.openWebsite(mainActivity, chapter.link)
             })
     }
 
@@ -141,7 +161,7 @@ class Info_of_novel(private val mainActivity: MainActivity, private val webSiteD
             if (expandableListView != null) {
                 adapter = InfoAboutNovelCustomAdapter(
                     requireContext(),
-                    webSiteData,
+                    DataManagement.copyWebsite(webSiteData),
                     mainActivity,
                     this
                 )
@@ -152,9 +172,12 @@ class Info_of_novel(private val mainActivity: MainActivity, private val webSiteD
         }
     }
 
-    override fun handleOnBookMarkClick() {
-        if (thisView != null) {
-            setLastReaded(thisView!!)
-        }
+    override fun handleOnBookMarkClick(chapter: Chapter?) {
+        if (thisView != null && chapter != null)
+            setLastReaded(thisView!!, chapter)
+    }
+
+    override fun signalRecived() {
+
     }
 }

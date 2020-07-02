@@ -33,8 +33,8 @@ object UpdateData {
                     val scraper = WebSiteScraperManagement.FindWebScraper(i.link)
                     if (scraper.checkDataUpdate(i)) {
                         DataManagement.updateNovel(scraper.getData())
+                        if(i.notification)
                         addToLog("Nastąpiła aktualizacja: " + i.Title + " Najnowszy rozdział to :" + i.lastNewChapter.Number)
-                        if (i.sendEmail)
                             EmailNotification.send(
                                 "Nastąpiła aktualizacja: " + i.Title + "<br>" +
                                         "Link do strony głównej" + i.link + "<br>" +

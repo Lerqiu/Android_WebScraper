@@ -10,7 +10,7 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import com.example.webscraper.List_item_child
 import com.example.webscraper.MainActivity
-import com.example.webscraper.OnBookMarkClick
+import com.example.helpers.OnBookMarkClick
 import com.example.webscraper.R
 
 
@@ -22,7 +22,6 @@ class CustomExpandableListAdapter internal constructor(
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
-        //return this.dataList[this.titleList[listPosition]]!![expandedListPosition]
         return getGroup(listPosition)
     }
 
@@ -38,18 +37,18 @@ class CustomExpandableListAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertView = convertView
-        if (convertView == null) {
-            val layoutInflater =
-                this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = layoutInflater.inflate(R.layout.list_item_child, null)
-            val item = List_item_child(
-                convertView,
-                this.websites[listPosition],
-                context,
-                mainActivity,
-                mainFragmentBookmark
-            )
-        }
+        // if (convertView == null) {
+        val layoutInflater =
+            this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        convertView = layoutInflater.inflate(R.layout.list_item_child, null)
+        val item = List_item_child(
+            convertView,
+            DataManagement.copyWebsite(DataManagement.getWebsite(this.websites[listPosition])),
+            context,
+            mainActivity,
+            mainFragmentBookmark
+        )
+        //  }
 
         return convertView!!
     }
@@ -59,7 +58,7 @@ class CustomExpandableListAdapter internal constructor(
     }
 
     override fun getGroup(listPosition: Int): Any {
-        return this.websites[listPosition]
+        return DataManagement.copyWebsite(this.websites[listPosition])
     }
 
     override fun getGroupCount(): Int {

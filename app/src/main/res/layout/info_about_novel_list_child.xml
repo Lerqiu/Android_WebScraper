@@ -6,13 +6,12 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/numberLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:id="@+id/numberLL">
+        android:paddingVertical="3dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,13 +29,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/nameLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:id="@+id/nameLL"
-        android:paddingBottom="10dp">
+        android:paddingVertical="3dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,22 +43,21 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/name"
             android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
             android:text="N/A"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/publishedLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:orientation="horizontal"
-        android:id="@+id/publishedLL"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingVertical="3dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -69,22 +66,21 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
+            android:id="@+id/published"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/published"
             android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
             android:text="N/A"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/timeAddLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:id="@+id/timeAddLL"
-        android:paddingBottom="10dp">
+        android:paddingVertical="3dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,9 +89,9 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
+            android:id="@+id/timeAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/timeAdd"
             android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
             android:text="N/A"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
@@ -105,8 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingVertical="5dp">
 
 
         <ImageButton

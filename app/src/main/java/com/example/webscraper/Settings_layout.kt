@@ -1,5 +1,6 @@
 package com.example.webscraper
 
+import DataWasUpdatedSignal
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -12,7 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import java.lang.NumberFormatException
 
-class Settings_layout(mainActivity: MainActivity) : Fragment() {
+class Settings_layout(mainActivity: MainActivity) : Fragment(),DataWasUpdatedSignal {
     private val mainActivity = mainActivity
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,6 +22,7 @@ class Settings_layout(mainActivity: MainActivity) : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.settings_layout, container, false)
 
+        
         setTextEnterEmail(view)
         setSwitchNotificationEmail(view)
         setSwitchNotificationStandard(view)
@@ -38,6 +40,8 @@ class Settings_layout(mainActivity: MainActivity) : Fragment() {
             if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
                 if (android.util.Patterns.EMAIL_ADDRESS.matcher(email_text.text).matches()) {
                     DataManagement.setEmail(email_text.text.toString())
+                    mainActivity.hideKeyboard()
+                    mainActivity.changeDrawerEmail()
                     Toast.makeText(
                         requireContext(),
                         requireContext().resources.getString(R.string.New_email_set),
@@ -115,5 +119,8 @@ class Settings_layout(mainActivity: MainActivity) : Fragment() {
         switch_checking.setOnCheckedChangeListener { buttonView, isChecked ->
             DataManagement.setCheckPeriodic(isChecked)
         }
+    }
+
+    override fun signalRecived() {
     }
 }

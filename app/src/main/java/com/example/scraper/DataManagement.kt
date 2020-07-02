@@ -216,12 +216,19 @@ object DataManagement {
         }
     }
 
+    private fun removeFromNewRelases(link: String) {
+        this.data.newChaptersReleses = this.data.newChaptersReleses.filter { it ->
+            (it.web.link != link)
+        }.toMutableList()
+    }
+
     fun removeNovel(link: String): Boolean {
         try {
             sharedLock.acquire()
-            if (isNovelAdded(link)) {
+            if (isNovelAdded_P(link)) {
                 this.data.WebSites =
                     this.data.WebSites.filter { it -> it.link != link } as MutableList<WebSiteData>
+                removeFromNewRelases(link)
                 UpdateData.addToLog("Usunięto: " + link)
                 sendUpdateSignal()
                 return true
@@ -248,15 +255,6 @@ object DataManagement {
         return false
     }
 
-    fun listOfNovels(): List<WebSiteData> {
-        try {
-            sharedLock.acquire()
-            return this.data.WebSites
-        } finally {
-            sharedLock.release()
-        }
-    }
-
     fun listNotReadedNovel(): List<WebSiteData> {
         try {
             sharedLock.acquire()
@@ -273,12 +271,77 @@ object DataManagement {
     fun markAsReadNovel(webSiteData: WebSiteData, chapterLastReaded: Chapter): Boolean {
         try {
             sharedLock.acquire()
+
             for (i in this.data.WebSites)
-                if (i == webSiteData) {
+                if (i.link == webSiteData.link) {
                     i.lastReadedChapter = chapterLastReaded
+
+
+                    var ind = -1
+                    for (index in 0..(i.chapters.size - 1)) {
+                        if (i.chapters[index].link == chapterLastReaded.link) {
+                            ind = index
+                            break
+                        }
+                    }
+
+                    if (ind >= 0)
+                        this.data.newChaptersReleses = this.data.newChaptersReleses.filter { it ->
+                            (it.web.link != webSiteData.link) || (
+                                    webSiteData.chapters.indexOf(it.chap) < ind
+                                    )
+                        }.toMutableList()
+                    sendUpdateSignal()
+
                     return true
                 }
             return false
+        } finally {
+            sharedLock.release()
+        }
+    }
+
+    private fun getWebsite_P(webSiteData: WebSiteData): WebSiteData {
+        for (i in this.data.WebSites) {
+            if (i.link == webSiteData.link)
+                return i
+        }
+        throw IndexOutOfBoundsException()
+    }
+
+    fun getWebsite(webSiteData: WebSiteData):WebSiteData{
+        try {
+            sharedLock.acquire()
+
+            return getWebsite_P(webSiteData)
+
+            sendUpdateSignal()
+        } finally {
+            sharedLock.release()
+        }
+    }
+
+    fun setWebsiteNotifications(webSiteData: WebSiteData, newState: Boolean) {
+        try {
+            sharedLock.acquire()
+
+            val i = getWebsite_P(webSiteData)
+            i.notification = newState
+
+            sendUpdateSignal()
+        } finally {
+            sharedLock.release()
+        }
+    }
+
+    fun getWebsiteNotifications(webSiteData: WebSiteData): Boolean {
+        try {
+            sharedLock.acquire()
+
+            val i = getWebsite_P(webSiteData)
+            return i.notification
+
+            sendUpdateSignal()
         } finally {
             sharedLock.release()
         }
@@ -303,9 +366,20 @@ object DataManagement {
     fun newRelases(): List<newRelase> {
         try {
             sharedLock.acquire()
-            return this.data.newChaptersReleses
+            return this.data.newChaptersReleses.toMutableList()
         } finally {
             sharedLock.release()
         }
+    }
+
+
+    fun copyWebsite(web: WebSiteData): WebSiteData {
+        val newW = WebSiteData(web.link, web.Title, web.Author, web.lastCheck)
+        newW.chapters = web.chapters.toMutableList()
+        newW.lastReadedChapter = web.lastReadedChapter
+        newW.genres = web.genres.toMutableList()
+        newW.notification = web.notification
+        newW.lastNewChapter = web.lastNewChapter
+        return newW
     }
 }

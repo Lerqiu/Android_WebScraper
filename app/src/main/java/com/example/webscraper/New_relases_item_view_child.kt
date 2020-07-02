@@ -3,13 +3,11 @@ package com.example.webscraper
 import Chapter
 import WebSiteData
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.view.View
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.helpers.OftenUsedMethods
 
 class New_relases_item_view_child(
     private val convertView: View,
@@ -27,31 +25,24 @@ class New_relases_item_view_child(
         setBookmark()
     }
     fun setLatestChapter(){
-        var chapterText = website.lastNewChapter.Name
-        if (chapterText .length == 0)
-            chapterText  = website.lastNewChapter.Number
-        convertView.findViewById<TextView>(R.id.latestCh).text = chapterText
+        convertView.findViewById<TextView>(R.id.latestCh).text =
+            OftenUsedMethods.getChapterDescription(website.lastNewChapter)
     }
     fun setLastRChapter(){
-        var chapterText = website.lastReadedChapter.Name
-        if (chapterText .length == 0)
-            chapterText  = website.lastReadedChapter.Number
-        convertView.findViewById<TextView>(R.id.lastRCh).text = chapterText
+        convertView.findViewById<TextView>(R.id.lastRCh).text = OftenUsedMethods.getChapterDescription(website.lastReadedChapter)
     }
 
     fun setOpenWebsite(){
         convertView.findViewById<ImageButton>(R.id.open_website)
             .setOnClickListener(View.OnClickListener { view ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(website.link)
-                context.startActivity(intent)
+               OftenUsedMethods.openWebsite(mainActivity,website.link)
             })
     }
     fun setBookmark(){
         convertView.findViewById<ImageButton>(R.id.click_bookmark)
             .setOnClickListener(View.OnClickListener { view ->
-                if (website.lastNewChapter != website.lastReadedChapter) {
-                    DataManagement.markAsReadNovel(website, website.lastNewChapter)
+                if (chapter != website.lastReadedChapter) {
+                    DataManagement.markAsReadNovel(website, chapter)
                     convertView.findViewById<ImageButton>(R.id.click_bookmark)
                         .setColorFilter(Color.LTGRAY)
                     convertView.findViewById<ImageButton>(R.id.click_bookmark).isClickable =

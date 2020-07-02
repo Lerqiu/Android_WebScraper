@@ -2,13 +2,12 @@ package com.example.webscraper
 
 import WebSiteData
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.graphics.ColorFilter
-import android.net.Uri
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import com.example.helpers.OftenUsedMethods
+import com.example.helpers.OnBookMarkClick
 
 class List_item_child(
     val convertView: View,
@@ -20,8 +19,9 @@ class List_item_child(
 
     init {
         setAuthor()
-        setChapterDescription()
-        setEmailButton()
+        setChapterLastReaded()
+        setChapterLatest()
+        setNotificationButton()
         setWebButton()
         setBookMarkButton()
         setInfoButton()
@@ -31,44 +31,41 @@ class List_item_child(
         convertView.findViewById<TextView>(R.id.list_item_child_layout_text).text = website.Author
     }
 
-    fun setChapterDescription() {
-        var chapter_text = website.lastNewChapter.Name
-        if (chapter_text.length != 0 && website.lastNewChapter.Number.length != 0)
-            chapter_text += " <=> " + website.lastNewChapter.Number
-        else
-            chapter_text += website.lastNewChapter.Number
+    fun setChapterLastReaded() {
+        val chapter_text = OftenUsedMethods.getChapterDescription(website.lastReadedChapter)
 
-        convertView.findViewById<TextView>(R.id.list_item_child_layout_chapter).text =
-            chapter_text
+        if (chapter_text.length > 0)
+            convertView.findViewById<TextView>(R.id.lastReaded).text =
+                chapter_text
     }
 
-    fun setEmailButton() {
-        if (website.sendEmail == false || DataManagement.isEmailAccepted() == false)
-            convertView.findViewById<ImageButton>(R.id.ImageButton_message)
-                .setColorFilter(Color.LTGRAY)
+    fun setChapterLatest() {
+        val chapter_text = OftenUsedMethods.getChapterDescription(website.lastNewChapter)
+        if (chapter_text.length > 0)
+            convertView.findViewById<TextView>(R.id.list_item_child_layout_chapter).text =
+                chapter_text
+    }
 
-        convertView.findViewById<ImageButton>(R.id.ImageButton_message)
-            .setOnClickListener(View.OnClickListener { view ->
-                if (DataManagement.isEmailAccepted()) {
-                    if (website.sendEmail == true) {
-                        convertView.findViewById<ImageButton>(R.id.ImageButton_message)
-                            .setColorFilter(Color.LTGRAY)
-                        website.sendEmail = false
-                    } else {
-                        convertView.findViewById<ImageButton>(R.id.ImageButton_message)
-                            .setColorFilter(convertView.findViewById<ImageButton>(R.id.ImageButton_web).colorFilter)
-                        website.sendEmail = true
-                    }
-                }
-            })
+    fun setNotificationButton() {
+        val button = convertView.findViewById<ImageButton>(R.id.ImageButton_notifications)
+        if (DataManagement.getWebsiteNotifications(website) == false)
+            button.setColorFilter(Color.LTGRAY)
+
+        button.setOnClickListener(View.OnClickListener { view ->
+            if (DataManagement.getWebsiteNotifications(website)) {
+                button.setColorFilter(Color.LTGRAY)
+                DataManagement.setWebsiteNotifications(website, false)
+            } else {
+                button.setColorFilter(convertView.findViewById<ImageButton>(R.id.ImageButton_web).colorFilter)
+                DataManagement.setWebsiteNotifications(website, true)
+            }
+        })
     }
 
     fun setWebButton() {
         convertView.findViewById<ImageButton>(R.id.ImageButton_web)
             .setOnClickListener(View.OnClickListener { view ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(website.link)
-                context.startActivity(intent)
+                OftenUsedMethods.openWebsite(mainActivity, website.link)
             })
     }
 
@@ -86,8 +83,10 @@ class List_item_child(
                         .setColorFilter(Color.LTGRAY)
                     convertView.findViewById<ImageButton>(R.id.ImageButton_bookMark).isClickable =
                         false
+                    website.lastReadedChapter = website.lastNewChapter //operacje na kopii
+                    this.setChapterLastReaded()
                 }
-                mainFragmentBookMarkClick.handleOnBookMarkClick()
+                mainFragmentBookMarkClick.handleOnBookMarkClick(website.lastNewChapter)
             })
     }
 

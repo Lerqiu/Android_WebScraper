@@ -16,7 +16,7 @@ class WebSiteData(link: String, Title: String, Author: String, time: Date) : Ser
     val Title: String = Title
     val Author: String = Author
     var lastCheck: Date = time
-    var sendEmail = true
+    var notification = true
     var genres: MutableList<String> = ArrayList()
     var chapters: MutableList<Chapter> = ArrayList()
 

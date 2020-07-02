@@ -3,11 +3,9 @@ package com.example.webscraper
 import Chapter
 import WebSiteData
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
-import android.net.Uri
 import android.view.View
 import android.widget.*
+import com.example.helpers.OftenUsedMethods
 
 class New_relases_item_view(
     private val convertView: View,
@@ -31,9 +29,7 @@ class New_relases_item_view(
     fun setOpenBrowser() {
         convertView.findViewById<ImageView>(R.id.open_browser)
             .setOnClickListener(View.OnClickListener { view ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(chapter.link)
-                context.startActivity(intent)
+               OftenUsedMethods.openWebsite(mainActivity,chapter.link)
             })
 
     }

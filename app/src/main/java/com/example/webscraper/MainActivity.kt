@@ -2,16 +2,17 @@ package com.example.webscraper
 
 import WebSiteData
 import android.content.Context
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
@@ -19,24 +20,40 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var drawer: DrawerLayout? = null
     private var toolBar: Toolbar? = null
+    private var drawerLayoutView: View?=null
+    private var updateUIHandler: Handler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setToolBar()
+        setDrawer()//Left menu
+
+        if (savedInstanceState == null)
+            setMainLayout_new_relases()
+
+        setUpdateUIHandlerListener()
+
+        loadDataBase()
+    }
+
+    private fun setToolBar(){
         toolBar = findViewById<Toolbar>(R.id.toolBar)
         setSupportActionBar(toolBar)
         toolBar?.findViewById<ImageView>(R.id.toolbar_logo)?.setOnClickListener { v->
-            DataManagement.removeLastChapter()
-           // UpdateData.runOneTime()
+            UpdateData.runOneTime()
         }
         toolBar?.findViewById<ImageButton>(R.id.toolbar_logo_dark)?.setOnClickListener { v->
-             UpdateData.runOneTime()
+            DataManagement.removeLastChapter()
         }
 
+    }
 
+    private fun setDrawer(){
         drawer = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        drawerLayoutView=navigationView
         navigationView.setNavigationItemSelectedListener(this)
 
         val actionBarDT = ActionBarDrawerToggle(
@@ -48,13 +65,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer?.addDrawerListener(actionBarDT)
         actionBarDT.syncState()
+    }
 
-        if (savedInstanceState == null)
-            setMainLayout_new_relases()
-
+    private fun loadDataBase(){
         Thread(Runnable {
             DataManagement.loadDataFromDisk(this.applicationContext)
-            //UpdateData.addNewNovel("""https://www.readlightnovel.org/mutagen""")
+            SystemClock.sleep(1000)
+            updateUIHandler?.sendEmptyMessage(0)
         }).start()
     }
 
@@ -77,6 +94,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.title = newTitle
     }
 
+    fun changeDrawerEmail(){
+        drawerLayoutView?.findViewById<TextView>(R.id.drawer_mail)?.text=DataManagement.getEmail()
+    }
+
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
 
         when (p0.itemId) {
@@ -92,54 +113,79 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //<====================================================>
     fun setMainLayout_new_relases() {
+        val layout = New_relases_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            NewNovelsRelases_layout(this)
+            layout
         ).commit()
+        DataManagement.setUpdateSignalReciver(layout)
         changeToolBarText(getString(R.string.New_releases))
     }
 
     fun setMainLayout_add_new() {
+        val layout =  Add_new_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            Add_new_layout(this)
+            layout
         ).commit()
+        DataManagement.setUpdateSignalReciver(layout)
         changeToolBarText(getString(R.string.Add_new))
     }
 
     fun setMainLayout_unread() {
+        val layout = Unread_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            Unread_layout(this)
+            layout
         ).commit()
+        DataManagement.setUpdateSignalReciver(layout)
         changeToolBarText(getString(R.string.Unread))
     }
 
     fun setMainLayout_view_all() {
+        val layout =  AllNovels_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            AllNovels_layout(this)
+            layout
         ).commit()
+        DataManagement.setUpdateSignalReciver(layout)
         changeToolBarText(getString(R.string.View_all))
     }
 
     fun setMainLayout_settings() {
+        val layout =  Settings_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            Settings_layout(this)
+            layout
         ).commit()
+        DataManagement.setUpdateSignalReciver(layout)
         changeToolBarText(getString(R.string.Settings))
     }
 
     fun setMainLayout_info_about_novel(novel: WebSiteData) {
+        val layout =  Info_of_novel(this,DataManagement.copyWebsite(DataManagement.getWebsite(novel)))
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            Info_of_novel(this,novel)
+            layout
         ).commit()
+        DataManagement.setUpdateSignalReciver(layout)
         changeToolBarText(novel.Title)
     }
 
+    private fun setUpdateUIHandlerListener() {
+        if (updateUIHandler != null) return
+
+        updateUIHandler = object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(inputMessage: Message) {
+                when(inputMessage.what){
+                    0 -> changeDrawerEmail()
+                }
+            }
+        }
+    }
 }
+
+
 
 fun AppCompatActivity.hideKeyboard() {
     val view = this.currentFocus

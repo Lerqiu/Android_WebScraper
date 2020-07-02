@@ -18,7 +18,7 @@
             android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorMainBlue"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
@@ -31,6 +31,7 @@
                 android:adjustViewBounds="true"
                 android:paddingHorizontal="10dp"
                 android:tint="@color/colorPrimaryDark"
+
                 android:src="@drawable/ic_reload" />
 
             <ImageView

@@ -38,7 +38,7 @@ class NewRelasesCustomAdapter internal constructor(
             convertView = layoutInflater.inflate(R.layout.new_relases_item_view_child, null)
             val item = New_relases_item_view_child(
                 convertView,
-                this.newRelases[listPosition].web,
+                DataManagement.copyWebsite(DataManagement.getWebsite(this.newRelases[listPosition].web)),
                 this.newRelases[listPosition].chap,
                 context,
                 mainActivity
@@ -71,18 +71,18 @@ class NewRelasesCustomAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertView = convertView
-        if (convertView == null) {
+        //if (convertView == null) {
             val layoutInflater =
                 this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = layoutInflater.inflate(R.layout.new_relases_item_view, null)
             New_relases_item_view(
                 convertView,
-                this.newRelases[listPosition].web,
+                DataManagement.copyWebsite(DataManagement.getWebsite(this.newRelases[listPosition].web)),
                 this.newRelases[listPosition].chap,
                 context,
                 mainActivity
             )
-        }
+       // }
 
         return convertView!!
     }

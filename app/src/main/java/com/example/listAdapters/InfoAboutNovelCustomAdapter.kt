@@ -9,15 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
+import com.example.helpers.OftenUsedMethods
+import com.example.helpers.OnBookMarkClick
 import com.example.webscraper.*
 
 
 class InfoAboutNovelCustomAdapter internal constructor(
     private val context: Context,
-    private val websites: WebSiteData,
+    website: WebSiteData,
     private val mainActivity: MainActivity,
     private val mainFragment: OnBookMarkClick
 ) : BaseExpandableListAdapter() {
+    private val website: WebSiteData =DataManagement.copyWebsite(website)
+
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         return getGroup(listPosition)
@@ -35,19 +39,17 @@ class InfoAboutNovelCustomAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertView = convertView
-        if (convertView == null) {
             val layoutInflater =
                 this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = layoutInflater.inflate(R.layout.info_about_novel_list_child, null)
             val item = Info_about_novel_child(
                 convertView,
-                websites,
+                DataManagement.copyWebsite(DataManagement.getWebsite(website)),
                 context,
                 mainActivity,
-                this.websites.chapters[listPosition],
+                getGroup(listPosition) as Chapter,
                 mainFragment
             )
-        }
 
         return convertView!!
     }
@@ -57,11 +59,11 @@ class InfoAboutNovelCustomAdapter internal constructor(
     }
 
     override fun getGroup(listPosition: Int): Any {
-        return this.websites.chapters[listPosition]
+        return this.website.chapters[listPosition]
     }
 
     override fun getGroupCount(): Int {
-        return this.websites.chapters.size
+        return this.website.chapters.size
     }
 
     override fun getGroupId(listPosition: Int): Long {
@@ -75,8 +77,8 @@ class InfoAboutNovelCustomAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertView = convertView
-        val listTitle = (getGroup(listPosition) as Chapter)
-        var TitleText = if (listTitle.Name.length == 0) listTitle.Number else listTitle.Name
+        val chapter = (getGroup(listPosition) as Chapter)
+        var TitleText = OftenUsedMethods.getChapterDescription(chapter)
         if (convertView == null) {
             val layoutInflater =
                 this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
