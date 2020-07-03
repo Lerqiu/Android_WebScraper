@@ -3,6 +3,7 @@ package com.example.webscraper
 import Chapter
 import DataWasUpdatedSignal
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,8 +38,10 @@ class AllNovels_layout(private val mainActivity: MainActivity) : Fragment(), Dat
 
             }
         } catch (e: Exception) {
-            println(e)
+            Log.e("Error",e.toString())
         }
+
+        UpdateData.addToLog("Stworzenie fragmentu: AllNovels_layout")
 
         return view
     }

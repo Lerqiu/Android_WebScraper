@@ -1,4 +1,4 @@
-package com.example.webscraper
+package com.example.helpers
 
 import WebSiteData
 import android.app.NotificationManager
@@ -22,8 +22,6 @@ class MarkAsReaded : BroadcastReceiver() {
         }
 
         if (extras?.containsKey("MarkAsReaded") == true && extras.containsKey("Chapter") == true) {
-            println("Sygnał uzyskany 1")
-
             val isEmpty = DataManagement.isEmpty()
             if (isEmpty)
                 DataManagement.loadDataFromDisk(context)
@@ -36,7 +34,6 @@ class MarkAsReaded : BroadcastReceiver() {
             if (isEmpty)
                 DataManagement.saveDataToDisk(context)
         } else if (extras?.containsKey("OpenWebsite") == true) {
-            println("Sygnał uzyskany 2")
             val link = extras["OpenWebsite"] as String
             if (URLUtil.isValidUrl(link)){
                 val intent = Intent(Intent.ACTION_VIEW)

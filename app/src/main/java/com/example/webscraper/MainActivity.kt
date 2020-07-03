@@ -1,7 +1,10 @@
 package com.example.webscraper
 
 import WebSiteData
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
@@ -15,6 +18,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.helpers.Service_checkKUpdate
 import com.google.android.material.navigation.NavigationView
 import java.util.*
 
@@ -56,6 +60,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setUpdateUIHandlerListener()
 
         loadDataBase()
+        setService()
+
+        UpdateData.addToLog("Stworzenie: MainActivity")
     }
 
     private fun setToolBar() {
@@ -203,6 +210,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
+    }
+
+     fun setService() {
+        val intent = Intent(this.application, Service_checkKUpdate::class.java)
+        val pendingIntent = PendingIntent.getService(this.application, 0, intent, 0)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if(pendingIntent != null){
+            alarmManager.cancel(pendingIntent)
+            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,0L,DataManagement.getPeriodOfChecking().toLong(),pendingIntent)
+        }
+
     }
 }
 

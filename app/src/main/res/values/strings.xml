@@ -34,4 +34,5 @@
     <string name="Chapter">Chapter</string>
     <string name="Mark_as_read">Mark as read</string>
     <string name="Open_novel">Open novel</string>
+    <string name="Error_network_is_not_available">Error network is not available</string>
 </resources>

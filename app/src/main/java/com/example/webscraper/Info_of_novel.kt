@@ -8,6 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,8 @@ class Info_of_novel(private val mainActivity: MainActivity, private val webSiteD
         setBrowserButton(view)
         setLastReaded(view, webSiteData.lastReadedChapter)
         setExpedabeleList(view)
+
+        UpdateData.addToLog("Stworzenie fragmentu: Info_of_novel")
 
         return view
     }
@@ -168,7 +171,7 @@ class Info_of_novel(private val mainActivity: MainActivity, private val webSiteD
                 expandableListView!!.setAdapter(adapter)
             }
         } catch (e: Exception) {
-            println(e)
+            Log.e("Error",e.toString())
         }
     }
 

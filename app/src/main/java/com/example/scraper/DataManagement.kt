@@ -202,19 +202,19 @@ object DataManagement {
                                         new.chapters[updatedChapterIndex]
                                     )
                                     this.data.newChaptersReleses.add(0, newRelase)
+                                    i.chapters = new.chapters
+                                    if (i.chapters.size > 0)
+                                        i.lastNewChapter = i.chapters[0]
+                                    sharedLock.release()
                                     OftenUsedMethods.setNotification(newRelase)
                                 }
                                 break
                             }
                         }
-
-                    i.chapters = new.chapters
-                    if (i.chapters.size > 0)
-                        i.lastNewChapter = i.chapters[0]
                 }
-            sendUpdateSignal()
         } finally {
             sharedLock.release()
+            sendUpdateSignal()
         }
     }
 

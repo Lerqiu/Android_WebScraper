@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".Service_checkKUpdate"
+            android:name="com.example.helpers.Service_checkKUpdate"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="false"/>
 
         <receiver
-            android:name=".MarkAsReaded"
+            android:name="com.example.helpers.MarkAsReaded"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

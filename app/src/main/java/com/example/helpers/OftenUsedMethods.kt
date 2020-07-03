@@ -1,26 +1,28 @@
 package com.example.helpers
 
 import Chapter
-import WebSiteData
-import android.app.*
+import DataManagement
+import UpdateData
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
-import android.os.SystemClock
-import android.provider.ContactsContract
 import android.util.Log
 import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.webscraper.MainActivity
-import com.example.webscraper.MarkAsReaded
 import com.example.webscraper.R
 import newRelase
+
 
 object OftenUsedMethods {
 
@@ -33,6 +35,7 @@ object OftenUsedMethods {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(link)
             activity.startActivity(intent)
+            UpdateData.addToLog("Otwarcie strony: " + link)
         } else {
             Toast.makeText(
                 activity.applicationContext,
@@ -40,6 +43,7 @@ object OftenUsedMethods {
                 Toast.LENGTH_LONG
             ).show()
         }
+
 
     }
 
@@ -148,6 +152,19 @@ object OftenUsedMethods {
             Log.e("Powiadomienia", "Problem tworzenia\n" + e)
         }
 
+    }
+
+    fun isNetworkAvailable(): Boolean {
+        var state = false
+        try {
+            val connectivityManager =
+                MainActivity.STATICMainActivity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+            val activeNetworkInfo = connectivityManager!!.activeNetworkInfo
+            state = activeNetworkInfo != null && activeNetworkInfo.isConnected
+        } catch (e: Exception) {
+            Log.e("Error", e.toString())
+        }
+        return state
     }
 
 }

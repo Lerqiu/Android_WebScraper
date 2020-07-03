@@ -39,6 +39,7 @@ class Settings_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSi
         setTextEnterTimeForCheck(view)
         setSwitchNotificationCheckingUpdate(view)
 
+        UpdateData.addToLog("Stworzenie fragmentu: Settings")
 
         return view
     }
@@ -98,9 +99,11 @@ class Settings_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSi
 
                 try {
                     val num = time_text.text.toString().toInt()
-                    if(num >0)
-                    number = num
+                    if(num >0){
+                        number = num
+                    }
                     else
+                        number = DataManagement.getPeriodOfChecking()
                         Toast.makeText(
                             requireContext(),
                             requireContext().resources.getString(R.string.Error_incorrect_format),
@@ -117,6 +120,7 @@ class Settings_layout(mainActivity: MainActivity) : Fragment(), DataWasUpdatedSi
                         requireContext().resources.getString(R.string.New_value_set),
                         Toast.LENGTH_SHORT
                     ).show()
+                    mainActivity.setService()
                 } else {
                     Toast.makeText(
                         requireContext(),

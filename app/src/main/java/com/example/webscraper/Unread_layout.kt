@@ -38,6 +38,8 @@ class Unread_layout(private val mainActivity: MainActivity) : Fragment(), DataWa
         } catch (e: Exception) {
             println(e)
         }
+        UpdateData.addToLog("Stworzenie fragmentu: Unread")
+
         return view
     }
 

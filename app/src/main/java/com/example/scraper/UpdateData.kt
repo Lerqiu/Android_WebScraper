@@ -1,4 +1,8 @@
+import android.util.Log
+import android.widget.Toast
 import com.example.helpers.OftenUsedMethods
+import com.example.webscraper.MainActivity
+import com.example.webscraper.R
 import com.share.email.EmailNotification
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -9,32 +13,14 @@ import java.util.*
 
 object UpdateData {
 
-    var isRunning = false
-    fun runUpdate() { //Co pewien czas
-        if (isRunning) return
-        isRunning = true
-        var timeS: Int = 0/*
-
-        GlobalScope.launch {
-            while (true) {
-                val date = Date()
-                runOneTime_P()
-                if ((Date().getTime() - date.getTime()) > timeS * 1000) {
-                    delay((Date().getTime() - date.getTime()) - timeS * 1000)
-                }
-            }
-        }*/
-    }
-
     private fun runOneTime_P() {
         try {
-
             for (i in DataManagement.getWebsites()) {
                 if (WebSiteScraperManagement.DoExistWebScraper(i.link)) {
                     val scraper = WebSiteScraperManagement.FindWebScraper(i.link)
                     if (scraper.checkDataUpdate(i)) {
                         DataManagement.updateNovel(scraper.getData())
-                        if(i.notification){
+                        if (i.notification) {
                             EmailNotification.send(
                                 "Nastąpiła aktualizacja: " + i.Title + "<br>" +
                                         "Link do strony głównej" + i.link + "<br>" +
@@ -55,27 +41,53 @@ object UpdateData {
     }
 
     fun runOneTime() {
-        Thread(Runnable {
-            runOneTime_P()
-        }).start()
+
+        if (OftenUsedMethods.isNetworkAvailable()) {
+            Thread(Runnable {
+                runOneTime_P()
+            }).start()
+        } else {
+            try {
+                Toast.makeText(
+                    MainActivity.STATICMainActivity,
+                    MainActivity.STATICMainActivity?.getString(R.string.Error_network_is_not_available),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch (e: Exception) {
+                Log.e("Error", e.toString())
+            }
+        }
     }
 
     fun addToLog(s: String) {
-        val date = Date()
-        //File(,"log").appendText(date.toString() + " " + s + "\n")
+        Log.i("Informacje dodatkowe", s)
     }
 
     fun addNewNovel(link: String) {
-        Thread(Runnable {
-            if (!DataManagement.isNovelAdded(link)) {
-                val scraper = WebSiteScraperManagement.FindWebScraper(link)
-                try {
-                    val novel = scraper.getData()
-                    DataManagement.addNewNovel(novel)
-                } catch (e: Exception) {
-                    println(e)
+
+        if (OftenUsedMethods.isNetworkAvailable()) {
+            Thread(Runnable {
+                if (!DataManagement.isNovelAdded(link)) {
+                    val scraper = WebSiteScraperManagement.FindWebScraper(link)
+                    try {
+                        val novel = scraper.getData()
+                        DataManagement.addNewNovel(novel)
+                    } catch (e: Exception) {
+                        Log.e("Error", e.toString())
+                    }
                 }
+            }).start()
+        } else {
+            try {
+                Toast.makeText(
+                    MainActivity.STATICMainActivity,
+                    MainActivity.STATICMainActivity?.getString(R.string.Error_network_is_not_available),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch (e: Exception) {
+                Log.e("Error", e.toString())
             }
-        }).start()
+        }
+
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,10 +45,12 @@ class New_relases_layout(private val mainActivity: MainActivity) : Fragment(),Da
 
 
                 } catch (e: Exception) {
-                println(e)
+                Log.e("Error",e.toString())
             }
         }
         setUpdateUIHandlerListener()
+        UpdateData.addToLog("Stworzenie fragmentu: New_relases_layout")
+
         return fragmentView!!
     }
 
@@ -63,7 +66,6 @@ class New_relases_layout(private val mainActivity: MainActivity) : Fragment(),Da
 
     private fun reloadLayout(){
         mainActivity.setMainLayout_new_relases()
-        println("Mastąpiła aktualizacja!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2222")
     }
 
     override fun signalRecived() {
