@@ -37,7 +37,7 @@ class WebSiteData(link: String, Title: String, Author: String, time: Date) : Ser
     }
 }
 
-data class newRelase (val web:WebSiteData,val chap:Chapter):Serializable
+data class newRelase(val web: WebSiteData, val chap: Chapter) : Serializable
 
 class Data : Serializable {
 
@@ -48,4 +48,9 @@ class Data : Serializable {
     var time: Int = 60 * 10
     var WebSites: MutableList<WebSiteData> = ArrayList()
     var newChaptersReleses: MutableList<newRelase> = ArrayList()
+
+    fun isEmpty(): Boolean {
+        return (WebSites.size == 0) && (newChaptersReleses.size == 0) && (email == "") &&
+                (sendEmail == true) && (showNotification == true) && (checkPeriodic == false) && (time == 60 * 10)
+    }
 }

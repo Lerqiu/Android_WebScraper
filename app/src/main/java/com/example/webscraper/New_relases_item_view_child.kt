@@ -42,7 +42,7 @@ class New_relases_item_view_child(
         convertView.findViewById<ImageButton>(R.id.click_bookmark)
             .setOnClickListener(View.OnClickListener { view ->
                 if (chapter != website.lastReadedChapter) {
-                    DataManagement.markAsReadNovel(website, chapter)
+                    DataManagement.markChapterAsReaded(website.link, chapter.toString())
                     convertView.findViewById<ImageButton>(R.id.click_bookmark)
                         .setColorFilter(Color.LTGRAY)
                     convertView.findViewById<ImageButton>(R.id.click_bookmark).isClickable =

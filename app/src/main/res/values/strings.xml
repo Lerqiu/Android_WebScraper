@@ -32,4 +32,6 @@
     <string name="Adding_new_novel_was_started">Adding new novel was started</string>
     <string name="Invalid_link">Invalid link</string>
     <string name="Chapter">Chapter</string>
+    <string name="Mark_as_read">Mark as read</string>
+    <string name="Open_novel">Open novel</string>
 </resources>

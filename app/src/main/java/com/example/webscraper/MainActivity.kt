@@ -16,44 +16,64 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
+import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    companion object {
+        var STATICMainActivity: MainActivity? = null
+    }
+
     private var drawer: DrawerLayout? = null
     private var toolBar: Toolbar? = null
-    private var drawerLayoutView: View?=null
+    private var drawerLayoutView: View? = null
     private var updateUIHandler: Handler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        STATICMainActivity = this
+
         setToolBar()
         setDrawer()//Left menu
 
-        if (savedInstanceState == null)
-            setMainLayout_new_relases()
+        val extras = intent.extras
+
+        if (extras != null && extras.containsKey("OpenFragment")) {
+            setMainLayout_info_about_novel(
+                WebSiteData(
+                    extras["OpenFragment"] as String,
+                    "",
+                    "",
+                    Date()
+                )
+            )
+        } else
+            if (savedInstanceState == null)
+                setMainLayout_new_relases()
 
         setUpdateUIHandlerListener()
 
         loadDataBase()
     }
 
-    private fun setToolBar(){
+    private fun setToolBar() {
         toolBar = findViewById<Toolbar>(R.id.toolBar)
         setSupportActionBar(toolBar)
-        toolBar?.findViewById<ImageView>(R.id.toolbar_logo)?.setOnClickListener { v->
+        toolBar?.findViewById<ImageView>(R.id.toolbar_logo)?.setOnClickListener { v ->
             UpdateData.runOneTime()
         }
-        toolBar?.findViewById<ImageButton>(R.id.toolbar_logo_dark)?.setOnClickListener { v->
+        toolBar?.findViewById<ImageButton>(R.id.toolbar_logo_dark)?.setOnClickListener { v ->
             DataManagement.removeLastChapter()
         }
 
     }
 
-    private fun setDrawer(){
+    private fun setDrawer() {
         drawer = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        drawerLayoutView=navigationView
+        drawerLayoutView = navigationView
         navigationView.setNavigationItemSelectedListener(this)
 
         val actionBarDT = ActionBarDrawerToggle(
@@ -67,7 +87,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         actionBarDT.syncState()
     }
 
-    private fun loadDataBase(){
+    fun loadDataBase() {
         Thread(Runnable {
             DataManagement.loadDataFromDisk(this.applicationContext)
             SystemClock.sleep(1000)
@@ -94,8 +114,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.title = newTitle
     }
 
-    fun changeDrawerEmail(){
-        drawerLayoutView?.findViewById<TextView>(R.id.drawer_mail)?.text=DataManagement.getEmail()
+    fun changeDrawerEmail() {
+        drawerLayoutView?.findViewById<TextView>(R.id.drawer_mail)?.text = DataManagement.getEmail()
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -123,7 +143,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun setMainLayout_add_new() {
-        val layout =  Add_new_layout(this)
+        val layout = Add_new_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
             layout
@@ -143,7 +163,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun setMainLayout_view_all() {
-        val layout =  AllNovels_layout(this)
+        val layout = AllNovels_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
             layout
@@ -153,7 +173,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun setMainLayout_settings() {
-        val layout =  Settings_layout(this)
+        val layout = Settings_layout(this)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
             layout
@@ -163,7 +183,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun setMainLayout_info_about_novel(novel: WebSiteData) {
-        val layout =  Info_of_novel(this,DataManagement.copyWebsite(DataManagement.getWebsite(novel)))
+        val layout =
+            Info_of_novel(this, DataManagement.copyWebsite(DataManagement.getWebsite(novel)))
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
             layout
@@ -177,14 +198,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         updateUIHandler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(inputMessage: Message) {
-                when(inputMessage.what){
+                when (inputMessage.what) {
                     0 -> changeDrawerEmail()
                 }
             }
         }
     }
 }
-
 
 
 fun AppCompatActivity.hideKeyboard() {

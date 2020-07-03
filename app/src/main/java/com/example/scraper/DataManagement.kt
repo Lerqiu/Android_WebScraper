@@ -1,7 +1,10 @@
 import android.content.Context
+import com.example.helpers.OftenUsedMethods
 import java.io.*
 import java.lang.Exception
+import java.util.*
 import java.util.concurrent.Semaphore
+import kotlin.collections.ArrayList
 
 interface DataWasUpdatedSignal {
     fun signalRecived()
@@ -194,13 +197,12 @@ object DataManagement {
                         for (index in 0..(new.chapters.size - 1)) {
                             if (new.chapters[index] == i.lastNewChapter) {
                                 for (updatedChapterIndex in (index - 1) downTo 0) {
-                                    this.data.newChaptersReleses.add(
-                                        0,
-                                        newRelase(
-                                            i,
-                                            new.chapters[updatedChapterIndex]
-                                        )
+                                    val newRelase = newRelase(
+                                        i,
+                                        new.chapters[updatedChapterIndex]
                                     )
+                                    this.data.newChaptersReleses.add(0, newRelase)
+                                    OftenUsedMethods.setNotification(newRelase)
                                 }
                                 break
                             }
@@ -268,28 +270,29 @@ object DataManagement {
         }
     }
 
-    fun markAsReadNovel(webSiteData: WebSiteData, chapterLastReaded: Chapter): Boolean {
+    fun markChapterAsReaded(
+        webSiteLink: String,
+        chapter_inString: String
+    ): Boolean {
         try {
             sharedLock.acquire()
 
             for (i in this.data.WebSites)
-                if (i.link == webSiteData.link) {
-                    i.lastReadedChapter = chapterLastReaded
-
+                if (i.link == webSiteLink) {
 
                     var ind = -1
                     for (index in 0..(i.chapters.size - 1)) {
-                        if (i.chapters[index].link == chapterLastReaded.link) {
+                        if (i.chapters[index].toString() == chapter_inString) {
                             ind = index
+                            i.lastReadedChapter = i.chapters[index]
                             break
                         }
                     }
 
                     if (ind >= 0)
                         this.data.newChaptersReleses = this.data.newChaptersReleses.filter { it ->
-                            (it.web.link != webSiteData.link) || (
-                                    webSiteData.chapters.indexOf(it.chap) < ind
-                                    )
+                            (it.web.link != webSiteLink) || (
+                                    i.chapters.indexOf(it.chap) < ind)
                         }.toMutableList()
                     sendUpdateSignal()
 
@@ -309,7 +312,7 @@ object DataManagement {
         throw IndexOutOfBoundsException()
     }
 
-    fun getWebsite(webSiteData: WebSiteData):WebSiteData{
+    fun getWebsite(webSiteData: WebSiteData): WebSiteData {
         try {
             sharedLock.acquire()
 
@@ -367,6 +370,15 @@ object DataManagement {
         try {
             sharedLock.acquire()
             return this.data.newChaptersReleses.toMutableList()
+        } finally {
+            sharedLock.release()
+        }
+    }
+
+    fun isEmpty(): Boolean {
+        try {
+            sharedLock.acquire()
+            return this.data.isEmpty()
         } finally {
             sharedLock.release()
         }

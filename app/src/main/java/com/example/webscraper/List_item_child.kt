@@ -78,7 +78,7 @@ class List_item_child(
         convertView.findViewById<ImageButton>(R.id.ImageButton_bookMark)
             .setOnClickListener(View.OnClickListener { view ->
                 if (website.lastNewChapter != website.lastReadedChapter) {
-                    DataManagement.markAsReadNovel(website, website.lastNewChapter)
+                    DataManagement.markChapterAsReaded(website.link, website.lastNewChapter.toString())
                     convertView.findViewById<ImageButton>(R.id.ImageButton_bookMark)
                         .setColorFilter(Color.LTGRAY)
                     convertView.findViewById<ImageButton>(R.id.ImageButton_bookMark).isClickable =
