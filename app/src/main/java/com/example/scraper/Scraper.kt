@@ -6,7 +6,7 @@ abstract class WebScrapers {
     abstract var link:String
     abstract fun getData(): WebSiteData
     abstract fun checkDataUpdate(data: WebSiteData): Boolean
-    fun checkLinkFormat(): Boolean {
+    open fun checkLinkFormat(): Boolean {
         return (link.commonPrefixWith(linkFormat).length == linkFormat.length)
     }
 }
@@ -26,11 +26,15 @@ object WebSiteScraperManagement {
             return NovelUpdates(s)
         if(ReadLightNovel(s).checkLinkFormat())
             return ReadLightNovel(s)
+        if(MangaKakalot(s).checkLinkFormat())
+            return MangaKakalot(s)
+        if(MangaBat(s).checkLinkFormat())
+            return MangaBat(s)
         //Kolejne klasy sprawdzamy podobnie
         throw NullPointerException()
     }
 
     fun getSupportedWebsites():List<String>{
-        return arrayListOf("NovelUpdates","ReadLightNovel")
+        return arrayListOf("NovelUpdates","ReadLightNovel","MangaBat","Manganelo","MangaKakalot")
     }
 }
