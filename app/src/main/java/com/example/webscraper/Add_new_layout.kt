@@ -14,7 +14,8 @@ import androidx.fragment.app.Fragment
 import com.example.helpers.OftenUsedMethods
 import java.lang.Exception
 
-class Add_new_layout(private val mainActivity: MainActivity) : Fragment(), DataWasUpdatedSignal {
+class Add_new_layout(private val mainActivity: MainActivity, private val startString: String = "") :
+    Fragment(), DataWasUpdatedSignal {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,12 +24,17 @@ class Add_new_layout(private val mainActivity: MainActivity) : Fragment(), DataW
     ): View? {
         val view = inflater.inflate(R.layout.add_new_novels_layout, container, false)
 
+        setStartText(view)
         setAddButton(view)
         setSupportedList(view)
 
         UpdateData.addToLog("Stworzenie fragmentu: Add_new_layout")
 
         return view
+    }
+
+    fun setStartText(view: View){
+        view.findViewById<EditText>(R.id.link).setText(startString)
     }
 
     fun setAddButton(view: View) {

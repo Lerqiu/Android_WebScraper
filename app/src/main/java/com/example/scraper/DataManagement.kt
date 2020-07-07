@@ -95,10 +95,16 @@ object DataManagement {
         }
     }
 
+    fun getNotificationStatus_P(): Boolean {
+
+            return data.showNotification
+
+    }
+
     fun getNotificationStatus(): Boolean {
         try {
             sharedLock.acquire()
-            return data.showNotification
+            return getNotificationStatus_P()
         } finally {
             sharedLock.release()
         }
@@ -190,27 +196,42 @@ object DataManagement {
         try {
             sharedLock.acquire()
 
+            if (new.chapters.size == 0) return
+
             for (i in this.data.WebSites)
                 if (i.link == new.link) {
 
-                    if (new.chapters.size > 0)
-                        for (index in 0..(new.chapters.size - 1)) {
-                            if (new.chapters[index] == i.lastNewChapter) {
-                                for (updatedChapterIndex in (index - 1) downTo 0) {
-                                    val newRelase = newRelase(
-                                        i,
-                                        new.chapters[updatedChapterIndex]
-                                    )
-                                    this.data.newChaptersReleses.add(0, newRelase)
-                                    i.chapters = new.chapters
-                                    if (i.chapters.size > 0)
-                                        i.lastNewChapter = i.chapters[0]
-                                    sharedLock.release()
-                                    OftenUsedMethods.setNotification(newRelase)
-                                }
-                                break
-                            }
+                    if (i.chapters.size == 0) {
+                        for (chapters in new.chapters) {
+                            val newRelase = newRelase(
+                                i,
+                                chapters
+                            )
+                            this.data.newChaptersReleses.add(0, newRelase)
+                            OftenUsedMethods.setNotification(newRelase)
                         }
+                        return
+                    }
+
+                    for (index in 0..(new.chapters.size - 1)) {
+                        val newCh = new.chapters[index]
+                        val oldCh =  i.lastNewChapter
+                        if (newCh.Number == oldCh.Number && newCh.Name == oldCh.Name && newCh.timeOfAdd == oldCh.timeOfAdd && newCh.PublishedBy == oldCh.PublishedBy) {
+                            for (updatedChapterIndex in (index - 1) downTo 0) {
+                                val newRelase = newRelase(
+                                    i,
+                                    new.chapters[updatedChapterIndex]
+                                )
+                                this.data.newChaptersReleses.add(0, newRelase)
+                                OftenUsedMethods.setNotification(newRelase)
+                            }
+                            i.chapters = new.chapters
+                            if (i.chapters.size > 0)
+                                i.lastNewChapter = i.chapters[0]
+
+                            break
+                        }
+                    }
                 }
         } finally {
             sharedLock.release()

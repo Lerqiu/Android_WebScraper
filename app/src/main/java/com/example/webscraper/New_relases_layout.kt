@@ -65,7 +65,11 @@ class New_relases_layout(private val mainActivity: MainActivity) : Fragment(),Da
     }
 
     private fun reloadLayout(){
-        mainActivity.setMainLayout_new_relases()
+        try {
+            mainActivity.setMainLayout_new_relases()
+        }catch (e:Exception){
+            Log.e("Error",e.toString())
+        }
     }
 
     override fun signalRecived() {

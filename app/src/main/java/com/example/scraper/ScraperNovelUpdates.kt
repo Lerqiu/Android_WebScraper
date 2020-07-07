@@ -62,10 +62,13 @@ class NovelUpdates(link: String) : WebScrapers() {
             try {
                 val PublishedBy = ele.get(1).getElementsByTag("td").get(1).text().toString()
                 val Number = ele.get(1).getElementsByTag("td").get(2).children().last().text().toString()
+                val timeOfAdd = ele.get(1).getElementsByTag("td").get(0).text().toString()
 
-                if (!(Number == data.lastNewChapter.Number && PublishedBy == data.lastNewChapter.PublishedBy)) {
-                    return true
-                }
+                val result =!((Number == data.chapters[0].Number) && (PublishedBy == data.chapters[0].PublishedBy)
+                        && (timeOfAdd == data.chapters[0].timeOfAdd))
+
+               return result
+
             } catch (e: Exception) {
                 UpdateData.addToLog("Nastąpił error z wprawdzaniem aktualizacji \n" + e)
             }

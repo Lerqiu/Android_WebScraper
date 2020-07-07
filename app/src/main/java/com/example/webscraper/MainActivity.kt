@@ -44,7 +44,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val extras = intent.extras
 
-        if (extras != null && extras.containsKey("OpenFragment")) {
+        if (extras != null && intent.action == Intent.ACTION_SEND && intent.type == """text/plain""" && extras.containsKey(
+                "android.intent.extra.TEXT"
+            )
+        ) {
+            setMainLayout_add_new(extras.get("android.intent.extra.TEXT") as String)
+        } else if (extras != null && extras.containsKey("OpenFragment")) {
             setMainLayout_info_about_novel(
                 WebSiteData(
                     extras["OpenFragment"] as String,
@@ -96,7 +101,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun loadDataBase() {
         Thread(Runnable {
-            DataManagement.loadDataFromDisk(this.applicationContext)
+            if (DataManagement.isEmpty())
+                DataManagement.loadDataFromDisk(this.applicationContext)
             SystemClock.sleep(1000)
             updateUIHandler?.sendEmptyMessage(0)
         }).start()
@@ -149,8 +155,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         changeToolBarText(getString(R.string.New_releases))
     }
 
-    fun setMainLayout_add_new() {
-        val layout = Add_new_layout(this)
+    fun setMainLayout_add_new(startText: String = "") {
+        val layout = Add_new_layout(this, startText)
         supportFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
             layout
@@ -212,13 +218,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-     fun setService() {
+    fun setService() {
         val intent = Intent(this.application, Service_checkKUpdate::class.java)
         val pendingIntent = PendingIntent.getService(this.application, 0, intent, 0)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        if(pendingIntent != null){
+        if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent)
-            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,0L,DataManagement.getPeriodOfChecking().toLong(),pendingIntent)
+            alarmManager.setRepeating(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                0L,
+                DataManagement.getPeriodOfChecking().toLong(),
+                pendingIntent
+            )
         }
 
     }

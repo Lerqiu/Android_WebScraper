@@ -17,21 +17,27 @@ object UpdateData {
         try {
             for (i in DataManagement.getWebsites()) {
                 if (WebSiteScraperManagement.DoExistWebScraper(i.link)) {
-                    val scraper = WebSiteScraperManagement.FindWebScraper(i.link)
-                    if (scraper.checkDataUpdate(i)) {
-                        DataManagement.updateNovel(scraper.getData())
-                        if (i.notification) {
-                            EmailNotification.send(
-                                "Nastąpiła aktualizacja: " + i.Title + "<br>" +
-                                        "Link do strony głównej" + i.link + "<br>" +
-                                        " Najnowszy rozdział to :" + i.lastNewChapter.Number + i.lastNewChapter.Name + "<br>" +
-                                        "Link: " + i.lastNewChapter.link,
-                                i.Title + " " + i.lastNewChapter.Number + "<br>" +
-                                        "Opublikowany przez: " + i.lastNewChapter.PublishedBy
-                            )
-                        }
-                        addToLog("Nastąpiła aktualizacja: " + i.Title + " Najnowszy rozdział to :" + i.lastNewChapter.Number)
+                    try {
 
+                        val scraper = WebSiteScraperManagement.FindWebScraper(i.link)
+                        if (scraper.checkDataUpdate(i)) {
+                            val newData= scraper.getData()
+                            DataManagement.updateNovel(newData)
+                            if (i.notification) {
+                                EmailNotification.send(
+                                    "Nastąpiła aktualizacja: " + i.Title + "<br>" +
+                                            "Link do strony głównej" + i.link + "<br>" +
+                                            " Najnowszy rozdział to :" + i.lastNewChapter.Number + i.lastNewChapter.Name + "<br>" +
+                                            "Link: " + i.lastNewChapter.link,
+                                    i.Title + " " + i.lastNewChapter.Number + "<br>" +
+                                            "Opublikowany przez: " + i.lastNewChapter.PublishedBy
+                                )
+                            }
+                            addToLog("Nastąpiła aktualizacja: " + i.Title + " Najnowszy rozdział to :" + i.lastNewChapter.Number)
+
+                        }
+                    }catch (e:Exception){
+                        Log.e("Error",e.toString())
                     }
                 }
             }
@@ -68,11 +74,12 @@ object UpdateData {
         if (OftenUsedMethods.isNetworkAvailable()) {
             Thread(Runnable {
                 if (!DataManagement.isNovelAdded(link)) {
-                    val scraper = WebSiteScraperManagement.FindWebScraper(link)
                     try {
+                        val scraper = WebSiteScraperManagement.FindWebScraper(link)
                         val novel = scraper.getData()
                         DataManagement.addNewNovel(novel)
                     } catch (e: Exception) {
+                        OftenUsedMethods.showToast("Error")
                         Log.e("Error", e.toString())
                     }
                 }

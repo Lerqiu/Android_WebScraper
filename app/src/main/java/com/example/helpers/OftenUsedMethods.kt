@@ -58,7 +58,7 @@ object OftenUsedMethods {
     private val PRIMARY_CHANNEL_ID = "primary_notification_channel"
     fun setNotification(website: newRelase) {
 
-        if (DataManagement.getNotificationStatus() == false) return
+        if (DataManagement.getNotificationStatus_P() == false) return
 
         try {
             val mainActivity: MainActivity = MainActivity.STATICMainActivity!!
@@ -165,6 +165,18 @@ object OftenUsedMethods {
             Log.e("Error", e.toString())
         }
         return state
+    }
+
+    fun showToast(text:String){
+        try{
+            Toast.makeText(
+                MainActivity.STATICMainActivity?.applicationContext,
+                MainActivity.STATICMainActivity?.getString(R.string.Invalid_link) + text,
+                Toast.LENGTH_LONG
+            ).show()
+        }catch (e:Exception){
+            Log.e("Error",e.toString())
+        }
     }
 
 }

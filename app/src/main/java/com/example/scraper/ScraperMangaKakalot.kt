@@ -5,7 +5,7 @@ import java.util.*
 
 class MangaKakalot(link: String) : WebScrapers() {
     override var link = link
-    override val linkFormat: String = """https://mangakakalot.com/manga/"""
+    override val linkFormat: String = """https://mangakakalot.com/"""
 
 
     override fun getData(): WebSiteData {
